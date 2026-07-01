@@ -2,6 +2,7 @@ import subprocess
 import csv
 import os
 from datetime import datetime
+from tier_engine import calculate_minmax, calculate_score
 
 def extract(repo_path):
     result = subprocess.run(
@@ -36,10 +37,11 @@ def extract(repo_path):
             elif "files changed" in line:
                 parts = line.split(",")
                 try:
-                    files = int(parts[0].strip().split(" ")[0])
-                    added = int(parts[1].strip().split(" ")[0])
-                    if len(parts) > 2:
-                        deleted = int(parts[2].strip().split(" ")[0])
+                    for part in parts:
+                        if "insertion" in part:
+                            added = int(part.strip().split(" ")[0])
+                        if "deletion" in part:
+                            deleted = int(part.strip().split(" ")[0])
                 except:
                     pass
 
@@ -80,7 +82,8 @@ def calculate_features(contributors):
 
         data["avg_files_per_commit"] = round(data["files"]/commits, 2) if commits > 0 else 0
         data["weekend_rate"] = round(data["weekend_commits"]/commits,2) if commits > 0 else 0
-        data["experience"] = commits
+        data["experience"] = commits -1
+        data["avg_lines_per_commit"] = round((data["added"] + data["deleted"])/commits, 2) if commits > 0 else 0
 
     return contributors
 
@@ -88,7 +91,7 @@ def calculate_features(contributors):
 def save_csv(contributors):
     with open("dataset.csv", "w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["author","commits","added","deleted","files","bugfix_commits","avg_files_per_commit","weekend_rate","experience"])
+        writer.writerow(["author","commits","added","deleted","files","bugfix_commits","avg_files_per_commit","avg_lines_per_commit","weekend_rate","experience","score"])
         for author, data in contributors.items():
             writer.writerow([author,
                             data["commits"],
@@ -97,13 +100,20 @@ def save_csv(contributors):
                             data["files"],
                             data["bugfix_commits"],
                             data["avg_files_per_commit"],
+                            data["avg_lines_per_commit"],
                             data["weekend_rate"],
-                            data["experience"]
+                            data["experience"],
+                            data["score"]
                             ])
             
 
 def run(repo_path):
     contributors = extract(repo_path)
     contributors = calculate_features(contributors)
+    minmax = calculate_minmax(contributors)
+    for contributor, data in contributors.items():
+        score = calculate_score(data, minmax)
+        contributors[contributor]["score"] = score
+    #contributors = calculate_score(contributors, minmax)
     save_csv(contributors)
     print("dataset.csv generated successfully!")
