@@ -2,7 +2,7 @@ import subprocess
 import csv
 import os
 from datetime import datetime
-from tier_engine import calculate_minmax, calculate_score
+from tier_engine import calculate_minmax, calculate_score, assign_tier
 
 def extract(repo_path):
     result = subprocess.run(
@@ -114,6 +114,7 @@ def run(repo_path):
     for contributor, data in contributors.items():
         score = calculate_score(data, minmax)
         contributors[contributor]["score"] = score
-    #contributors = calculate_score(contributors, minmax)
+        tier = assign_tier(score)
+        contributors[contributor]["tier"] = tier
     save_csv(contributors)
     print("dataset.csv generated successfully!")

@@ -41,3 +41,18 @@ def calculate_minmax(contributors):
             minmax[key]["max"] = max(minmax[key]["max"], data[key])
 
     return minmax
+
+
+def assign_tier(score):
+    if score >= 0.83:
+        return 1
+    elif score >= 0.66:
+        return 2
+    elif score >= 0.49:
+        return 3
+    elif score >= 0.32:
+        return 4
+    elif score >= 0.15:
+        return 5
+    else:
+        return 6
