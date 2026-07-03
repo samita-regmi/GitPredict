@@ -1,3 +1,5 @@
+import csv
+
 def calculate_score(data, minmax):
     bugfix_ratio = data["bugfix_commits"]/data["commits"] if data["commits"] > 0 else 0
     normalized_commits = (data["commits"] - minmax["commits"]["min"]) / (minmax["commits"]["max"] - minmax["commits"]["min"]) if minmax["commits"]["max"] != minmax["commits"]["min"] else 0
@@ -56,3 +58,18 @@ def assign_tier(score):
         return 5
     else:
         return 6
+
+
+def load_data():
+    with open("dataset.csv", "r", newline="") as f:
+        reader = csv.reader(f)
+        data=[]
+        next(reader)
+        for row in reader:
+            numeric_row = [float(val) for val in row[1:-2]]  + [int(row[-1])]
+            data.append(numeric_row)
+    return data
+
+if __name__ == '__main__':
+    data = load_data()
+    print(data[0])  # print first row

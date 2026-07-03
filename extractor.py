@@ -91,7 +91,7 @@ def calculate_features(contributors):
 def save_csv(contributors):
     with open("dataset.csv", "w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["author","commits","added","deleted","files","bugfix_commits","avg_files_per_commit","avg_lines_per_commit","weekend_rate","experience","score"])
+        writer.writerow(["author","commits","added","deleted","files","bugfix_commits","avg_files_per_commit","avg_lines_per_commit","weekend_rate","experience","score","tier"])
         for author, data in contributors.items():
             writer.writerow([author,
                             data["commits"],
@@ -103,7 +103,8 @@ def save_csv(contributors):
                             data["avg_lines_per_commit"],
                             data["weekend_rate"],
                             data["experience"],
-                            data["score"]
+                            data["score"],
+                            data["tier"]
                             ])
             
 
