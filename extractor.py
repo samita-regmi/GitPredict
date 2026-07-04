@@ -2,15 +2,20 @@ import subprocess
 import csv
 import os
 from datetime import datetime
-from tier_engine import calculate_minmax, calculate_score, assign_tier
+from tier_engine import calculate_minmax, calculate_score, assign_tier,calculate_percentile_boundaries
 
 def extract(repo_path):
     result = subprocess.run(
-        ["git","log","--stat"],
-        capture_output=True,
-        text = True,
-        cwd=repo_path
-    )
+    ["git","log","--stat"],
+    capture_output=True,
+    text=True,
+    cwd=repo_path,
+    encoding='utf-8',
+    errors='replace')
+
+    print(result.returncode)
+    print(result.stderr)
+
     commits = result.stdout.split("commit ")
     contributors = {}
 
@@ -89,7 +94,7 @@ def calculate_features(contributors):
 
 
 def save_csv(contributors):
-    with open("dataset.csv", "w", newline="") as f:
+    with open("dataset.csv", "w", newline="", encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow(["author","commits","added","deleted","files","bugfix_commits","avg_files_per_commit","avg_lines_per_commit","weekend_rate","experience","score","tier"])
         for author, data in contributors.items():
@@ -115,7 +120,12 @@ def run(repo_path):
     for contributor, data in contributors.items():
         score = calculate_score(data, minmax)
         contributors[contributor]["score"] = score
-        tier = assign_tier(score)
+
+    scores = [data["score"] for data in contributors.values()]
+    boundaries = calculate_percentile_boundaries(scores)
+
+    for contributor, data in contributors.items():
+        tier = assign_tier(data["score"], boundaries)
         contributors[contributor]["tier"] = tier
     save_csv(contributors)
     print("dataset.csv generated successfully!")
