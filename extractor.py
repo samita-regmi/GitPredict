@@ -2,7 +2,7 @@ import subprocess
 import csv
 import os
 from datetime import datetime
-from tier_engine import calculate_minmax, calculate_score, assign_tier,calculate_percentile_boundaries
+from tier_engine import calculate_minmax, calculate_score, assign_tier,calculate_percentile_boundaries, calculate_salary_adjustment
 
 def extract(repo_path):
     result = subprocess.run(
@@ -96,7 +96,7 @@ def calculate_features(contributors):
 def save_csv(contributors):
     with open("dataset.csv", "w", newline="", encoding='utf-8') as f:
         writer = csv.writer(f)
-        writer.writerow(["author","commits","added","deleted","files","bugfix_commits","avg_files_per_commit","avg_lines_per_commit","weekend_rate","experience","score","tier"])
+        writer.writerow(["author","commits","added","deleted","files","bugfix_commits","avg_files_per_commit","avg_lines_per_commit","weekend_rate","experience","score","tier","salary_adjustment"])
         for author, data in contributors.items():
             writer.writerow([author,
                             data["commits"],
@@ -109,7 +109,8 @@ def save_csv(contributors):
                             data["weekend_rate"],
                             data["experience"],
                             data["score"],
-                            data["tier"]
+                            data["tier"],
+                            data["salary_adjustment"]
                             ])
             
 
@@ -127,5 +128,9 @@ def run(repo_path):
     for contributor, data in contributors.items():
         tier = assign_tier(data["score"], boundaries)
         contributors[contributor]["tier"] = tier
+
+    for contributor, data in contributors.items():
+        salary = calculate_salary_adjustment(data["tier"])
+        contributors[contributor]["salary_adjustment"] = salary
     save_csv(contributors)
     print("dataset.csv generated successfully!")

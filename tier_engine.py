@@ -46,6 +46,20 @@ def calculate_minmax(contributors):
 
     return minmax
 
+def calculate_salary_adjustment(tier):
+    if tier == 1:
+        return 0.15
+    elif tier == 2:
+        return 0.12
+    elif tier == 3:
+        return 0.08
+    elif tier == 4:
+        return 0
+    elif tier == 5:
+        return -0.08
+    else:
+        return -0.10
+
 def calculate_percentile_boundaries(score):
     sorted_score = sorted(score)
     n= len(sorted_score)
