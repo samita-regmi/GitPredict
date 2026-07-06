@@ -227,3 +227,16 @@ if __name__ == "__main__":
     data = load_data()
     tree = build_tree(data)
     print_tree(tree)
+
+
+def load_regression_data():
+    with open("dataset.csv","r", newline="", encoding="utf-8") as f:
+        reader = csv.reader(f)
+        data_x=[]
+        data_y=[]
+        next(reader)
+        for row in reader:
+            numeric_row = [float(row[1])] +[float(row[5])] +[float(row[9])] +[int(row[-2])]
+            data_x.append(numeric_row)
+            data_y.append(float(row[-1]))
+    return data_x, data_y
