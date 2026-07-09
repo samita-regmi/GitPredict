@@ -1,4 +1,6 @@
 import csv
+from math_utils import transpose, matrix_multiply, calculate_mse, predict, linear_regression
+
 
 header = ["commits", "added", "deleted", "files", "bugfix_commits", "avg_files_per_commit", "avg_lines_per_commit", "weekend_rate", "experience"]
 
@@ -90,7 +92,7 @@ def load_data():
         data=[]
         next(reader)
         for row in reader:
-            numeric_row = [float(val) for val in row[1:-2]]  + [int(row[-1])]
+            numeric_row = [float(val) for val in row[1:-3]]  + [int(row[-2])]
             data.append(numeric_row)
     return data
 
@@ -223,11 +225,6 @@ def print_tree(node, spacing =""):
     print(spacing + '--> False:')
     print_tree(node.false_branch, spacing + "  ")
 
-if __name__ == "__main__":
-    data = load_data()
-    tree = build_tree(data)
-    print_tree(tree)
-
 
 def load_regression_data():
     with open("dataset.csv","r", newline="", encoding="utf-8") as f:
@@ -240,3 +237,29 @@ def load_regression_data():
             data_x.append(numeric_row)
             data_y.append(float(row[-1]))
     return data_x, data_y
+
+def run_regression():
+    X, y = load_regression_data()
+    n = len(X)
+    split = int(0.8*n)
+    X_train = X[:split]
+    X_val = X[split:]
+    y_train = y[:split]
+    y_val = y[split:]
+    betas = linear_regression(X_train, y_train)
+    mse_train = calculate_mse(X_train, y_train, betas)
+    mse_val = calculate_mse(X_val, y_val, betas)
+    print("---SALARY ADJUSTMENT REGRESSION RESULT---")
+    print("Beta 0 (intercept)",betas[0])
+    print("Beta 1 (commits)",betas[1])
+    print("Beta 2 (bugfixes)",betas[2])
+    print("Beta 3 (experience)",betas[3])
+    print("Beta 4 (tier)",betas[4])
+    print("Training MSE :",mse_train)
+    print("Validation MSE :",mse_val)
+
+if __name__ == "__main__":
+    data = load_data()
+    tree = build_tree(data)
+    print_tree(tree)
+    run_regression()
