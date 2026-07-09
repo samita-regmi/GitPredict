@@ -1,13 +1,15 @@
 import sys
 import json
 from extractor import run
-from tier_engine import assign_tier, calculate_score, calculate_salary_adjustment, get_tier_label, get_decision_reason, get_salary_recommendation
+from tier_engine import assign_tier, calculate_score, calculate_salary_adjustment, get_tier_label, get_decision_reason, get_salary_recommendation, load_data, build_tree, print_tree, run_regression
 
 if __name__ == "__main__":
     if "--analyze" in sys.argv and "--repo" in sys.argv:
         repo_index = sys.argv.index("--repo") + 1
         repo_path = sys.argv[repo_index]
         run(repo_path)
+        run_regression()
+        print_tree(build_tree(load_data()))
     if "--predict" in sys.argv:
         commit_index = sys.argv.index("--commits") + 1
         commits = int(sys.argv[commit_index])
@@ -47,7 +49,7 @@ if __name__ == "__main__":
         print("GIT PREDICT RADAR FORECAST")
         print("============================")
         print("Committer Performance Tier : ",get_tier_label(tier))
-        print("Salary Adjustment Forecast: ",salary_adjustment)
+        print(f"Salary Adjustment Forecast: {salary_adjustment * 100:+.1f}%")
         print("Recommendation : ",get_salary_recommendation(tier))
         print("Decision Reason :",get_decision_reason(tier))
         print("=============================")

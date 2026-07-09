@@ -14,9 +14,6 @@ def extract(repo_path):
     encoding='utf-8',
     errors='replace')
 
-    print(result.returncode)
-    print(result.stderr)
-
     commits = result.stdout.split("commit ")
     contributors = {}
 
