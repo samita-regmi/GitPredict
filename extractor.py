@@ -1,6 +1,7 @@
 import subprocess
 import csv
 import os
+import json
 from datetime import datetime
 from tier_engine import calculate_minmax, calculate_score, assign_tier,calculate_percentile_boundaries, calculate_salary_adjustment
 
@@ -118,12 +119,16 @@ def run(repo_path):
     contributors = extract(repo_path)
     contributors = calculate_features(contributors)
     minmax = calculate_minmax(contributors)
+    with open("minmax.json","w") as f:
+        json.dump(minmax, f)
     for contributor, data in contributors.items():
         score = calculate_score(data, minmax)
         contributors[contributor]["score"] = score
 
     scores = [data["score"] for data in contributors.values()]
     boundaries = calculate_percentile_boundaries(scores)
+    with open("boundaries.json", "w") as f:
+        json.dump(boundaries, f)
 
     for contributor, data in contributors.items():
         tier = assign_tier(data["score"], boundaries)

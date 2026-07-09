@@ -258,6 +258,44 @@ def run_regression():
     print("Training MSE :",mse_train)
     print("Validation MSE :",mse_val)
 
+
+
+def get_decision_reason(tier):
+    if tier == 1:
+        return "Strong contribution volume with broad file ownership and low defect ratio."
+    elif tier == 2:
+        return "High performing contributor with consistent activity."
+    elif tier == 3:
+        return "Solid contributor with good commit history."
+    elif tier == 4:
+        return "Average contributor with acceptable performance."
+    elif tier == 5:
+        return "Underperforming contributor with low activity."
+    else:
+        return "Lowest performing contributor with minimal contribution."
+
+def get_tier_label(tier):
+    if tier == 1:
+        return "TIER 1 - BEST"
+    elif tier == 2:
+        return "TIER 2 - VERY GOOD"
+    elif tier == 3:
+        return "TIER 3 - GOOD"
+    elif tier == 4:
+        return "TIER 4 -AVERAGE"
+    elif tier == 5:
+        return "TIER 5 - WEAK"
+    elif tier == 3:
+        return "TIER 3 - VERY BAD"
+    
+def get_salary_recommendation(tier):
+    if tier == 1 or tier ==2 or tier ==3:
+        return "SALARY INCREASE"
+    elif tier == 4 or tier == 5:
+        return "NO SALARY CHANGE"
+    else:
+        return "SALARY DECREASE"
+
 if __name__ == "__main__":
     data = load_data()
     tree = build_tree(data)

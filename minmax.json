@@ -1,0 +1,1 @@
+{"commits": {"min": 1, "max": 1841}, "added": {"min": 0, "max": 35261}, "deleted": {"min": 0, "max": 34731}, "files": {"min": 0, "max": 0}, "bugfix_commits": {"min": 0, "max": 289}, "avg_files_per_commit": {"min": 0.0, "max": 0.0}, "avg_lines_per_commit": {"min": 0.0, "max": 1247.0}, "weekend_rate": {"min": 0.0, "max": 1.0}, "experience": {"min": 0, "max": 1840}}
