@@ -35,12 +35,12 @@ The user interacts with GitPredict through the command line. One command analyze
 
 ## Assumptions
 - Salary adjustment percentages were manually defined: 
--Tier 1 → +15%
--Tier 2 → +12%
--Tier 3 → +8%
--Tier 4 → 0%
--Tier 5 → -8%
--Tier 6 → -10%
+  -Tier 1 → +15%
+  -Tier 2 → +12%
+  -Tier 3 → +8%
+  -Tier 4 → 0%
+  -Tier 5 → -8%
+  -Tier 6 → -10%
 - Author experience is approximated as total commits minus 1
 - Bugfix commits are identified by keywords: "fix", "bug", "patch" in commit messages
 - Weekend commit rate is set to 0 for the --predict command since commit timing is unknown
